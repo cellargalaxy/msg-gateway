@@ -8,7 +8,7 @@ import (
 	"github.com/cellargalaxy/go_common/consd"
 	common_model "github.com/cellargalaxy/go_common/model"
 	"github.com/cellargalaxy/go_common/util"
-	"github.com/cellargalaxy/msg-gateway/model"
+	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"net/http"

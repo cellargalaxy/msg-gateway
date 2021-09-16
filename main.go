@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/cellargalaxy/go_common/util"
-	"github.com/cellargalaxy/msg-gateway/config"
-	"github.com/cellargalaxy/msg-gateway/controller"
+	"github.com/cellargalaxy/msg_gateway/config"
+	"github.com/cellargalaxy/msg_gateway/controller"
 	"github.com/sirupsen/logrus"
 )
 

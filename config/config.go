@@ -3,7 +3,7 @@ package config
 import (
 	"context"
 	"github.com/cellargalaxy/go_common/util"
-	"github.com/cellargalaxy/msg-gateway/model"
+	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/go-ini/ini"
 	"github.com/sirupsen/logrus"
 	"time"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/cellargalaxy/msg-gateway/config"
+	"github.com/cellargalaxy/msg_gateway/config"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )

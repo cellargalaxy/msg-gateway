@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cellargalaxy/go_common/util"
-	"github.com/cellargalaxy/msg-gateway/config"
-	"github.com/cellargalaxy/msg-gateway/model"
+	"github.com/cellargalaxy/msg_gateway/config"
+	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )

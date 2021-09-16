@@ -1,4 +1,4 @@
-module github.com/cellargalaxy/msg-gateway
+module github.com/cellargalaxy/msg_gateway
 
 go 1.16
 

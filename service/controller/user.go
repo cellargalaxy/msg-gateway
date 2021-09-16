@@ -2,8 +2,8 @@ package controller
 
 import (
 	"context"
-	"github.com/cellargalaxy/msg-gateway/model"
-	"github.com/cellargalaxy/msg-gateway/service/wx"
+	"github.com/cellargalaxy/msg_gateway/model"
+	"github.com/cellargalaxy/msg_gateway/service/wx"
 )
 
 //获取全部用户信息

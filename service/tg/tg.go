@@ -3,7 +3,7 @@ package tg
 import (
 	"context"
 	"crypto/tls"
-	"github.com/cellargalaxy/msg-gateway/config"
+	"github.com/cellargalaxy/msg_gateway/config"
 	"github.com/go-resty/resty/v2"
 )
 

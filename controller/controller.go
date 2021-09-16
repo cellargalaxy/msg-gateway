@@ -3,8 +3,8 @@ package controller
 import (
 	"fmt"
 	"github.com/cellargalaxy/go_common/util"
-	"github.com/cellargalaxy/msg-gateway/model"
-	"github.com/cellargalaxy/msg-gateway/static"
+	"github.com/cellargalaxy/msg_gateway/model"
+	"github.com/cellargalaxy/msg_gateway/static"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"

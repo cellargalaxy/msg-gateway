@@ -3,7 +3,7 @@ package test
 import (
 	"context"
 	"github.com/cellargalaxy/go_common/util"
-	"github.com/cellargalaxy/msg-gateway/sdk"
+	"github.com/cellargalaxy/msg_gateway/sdk"
 	"testing"
 	"time"
 )
