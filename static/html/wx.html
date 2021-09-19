@@ -99,14 +99,6 @@
 <script src="../js/jsrsasign-latest-all-min.js"></script>
 <script src="../js/util.js"></script>
 <script>
-    const instance = axios.create({timeout: 60 * 1000})
-    instance.interceptors.request.use(
-        config => {
-            config.headers['Authorization'] = 'Bearer ' + enJwt()
-            return config
-        },
-        error => Promise.reject(error))
-
     let vue = new Vue({
         el: '#vue',
         data: {
