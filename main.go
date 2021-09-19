@@ -9,9 +9,16 @@ import (
 
 func init() {
 	logrus.SetLevel(config.Config.LogLevel)
-	util.InitLog("msg_gateway")
+	util.InitLog(util.GetServerNameWithPanic())
 }
 
+/**
+export server_name=msg_gateway
+export server_center_address=http://127.0.0.1:7557
+export server_center_secret=secret_secret
+
+server_name=msg_gateway;server_center_address=http://127.0.0.1:7557;server_center_secret=secret_secret
+*/
 func main() {
 	err := controller.Controller()
 	if err != nil {

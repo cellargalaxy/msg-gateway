@@ -11,17 +11,17 @@ const (
 )
 
 type Config struct {
-	LogLevel       logrus.Level  `ini:"log_level" json:"log_level"`
-	Retry          int           `ini:"retry" json:"retry"`
-	Timeout        time.Duration `ini:"timeout" json:"timeout"`
-	Sleep          time.Duration `ini:"sleep" json:"sleep"`
-	Secret         string        `ini:"secret" json:"secret"`
-	WxAppId        string        `ini:"wx_app_id" json:"wx_app_id"`
-	WxAppSecret    string        `ini:"wx_app_secret" json:"wx_app_secret"`
-	WxCommonTempId string        `ini:"wx_common_temp_id" json:"wx_common_temp_id"`
-	WxCommonTagId  int           `ini:"wx_common_tag_id" json:"wx_common_tag_id"`
-	TgToken        string        `ini:"tg_token" json:"tg_token"`
-	TgChatId       int64         `ini:"tg_chat_id" json:"tg_chat_id"`
+	LogLevel       logrus.Level  `yaml:"log_level" json:"log_level"`
+	Retry          int           `yaml:"retry" json:"retry"`
+	Timeout        time.Duration `yaml:"timeout" json:"timeout"`
+	Sleep          time.Duration `yaml:"sleep" json:"sleep"`
+	Secret         string        `yaml:"secret" json:"-"`
+	WxAppId        string        `yaml:"wx_app_id" json:"wx_app_id"`
+	WxAppSecret    string        `yaml:"wx_app_secret" json:"-"`
+	WxCommonTempId string        `yaml:"wx_common_temp_id" json:"wx_common_temp_id"`
+	WxCommonTagId  int           `yaml:"wx_common_tag_id" json:"wx_common_tag_id"`
+	TgToken        string        `yaml:"tg_token" json:"-"`
+	TgChatId       int64         `yaml:"tg_chat_id" json:"tg_chat_id"`
 }
 
 func (this Config) String() string {
