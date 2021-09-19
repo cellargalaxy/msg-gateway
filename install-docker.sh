@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 if [ -z $server_name ]; then
-  read -p "please enter server_name(default:server_center):" server_name
+  read -p "please enter server_name(default:msg_gateway):" server_name
 fi
 if [ -z $server_name ]; then
-  server_name="server_center"
+  server_name="msg_gateway"
 fi
 
 while :; do
