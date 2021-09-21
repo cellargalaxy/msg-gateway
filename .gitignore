@@ -17,3 +17,6 @@
 .idea
 *.log
 msg_gateway
+*.ini
+*.yml
+*.yaml
