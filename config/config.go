@@ -29,11 +29,11 @@ func checkAndResetConfig(ctx context.Context, config model.Config) (model.Config
 	if config.LogLevel <= 0 || config.LogLevel > logrus.TraceLevel {
 		config.LogLevel = logrus.InfoLevel
 	}
-	if Config.Timeout < 0 {
-		Config.Timeout = 3 * time.Second
+	if config.Timeout < 0 {
+		config.Timeout = 3 * time.Second
 	}
-	if Config.Sleep < 0 {
-		Config.Sleep = 3 * time.Second
+	if config.Sleep < 0 {
+		config.Sleep = 3 * time.Second
 	}
 	if config.Secret == "" {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("secret为空")
