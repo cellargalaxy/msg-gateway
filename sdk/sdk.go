@@ -15,22 +15,23 @@ import (
 	"time"
 )
 
+type MsgHandlerInter interface {
+	GetAddress(ctx context.Context) string
+	GetSecret(ctx context.Context) string
+}
+
 type MsgClient struct {
-	address    string
-	secret     string
 	retry      int
+	handler    MsgHandlerInter
 	httpClient *resty.Client
 }
 
-func NewMsgClient(timeout, sleep time.Duration, retry int, address, secret string) (*MsgClient, error) {
-	if address == "" {
-		return nil, fmt.Errorf("address为空")
-	}
-	if secret == "" {
-		return nil, fmt.Errorf("secret为空")
+func NewMsgClient(timeout, sleep time.Duration, retry int, handler MsgHandlerInter) (*MsgClient, error) {
+	if handler == nil {
+		return nil, fmt.Errorf("MsgHandlerInter为空")
 	}
 	httpClient := createHttpClient(timeout, sleep, retry)
-	return &MsgClient{address: address, secret: secret, retry: retry, httpClient: httpClient}, nil
+	return &MsgClient{retry: retry, handler: handler, httpClient: httpClient}, nil
 }
 
 func createHttpClient(timeout, sleep time.Duration, retry int) *resty.Client {
@@ -128,7 +129,7 @@ func (this MsgClient) requestSendTgMsg2ConfigChatId(ctx context.Context, jwtToke
 		SetBody(map[string]interface{}{
 			"text": text,
 		}).
-		Post(this.address + "/api/sendTgMsg2ConfigChatId")
+		Post(this.handler.GetAddress(ctx) + "/api/sendTgMsg2ConfigChatId")
 
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("给配置chatId发送tg信息，请求异常")
@@ -201,7 +202,7 @@ func (this MsgClient) requestSendWxTemplateToTag(ctx context.Context, jwtToken s
 			"url":         url,
 			"data":        data,
 		}).
-		Post(this.address + "/api/sendTemplateToTag")
+		Post(this.handler.GetAddress(ctx) + "/api/sendTemplateToTag")
 
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信模板信息，请求异常")
@@ -256,7 +257,7 @@ func (this MsgClient) requestSendTemplateToCommonTag(ctx context.Context, jwtTok
 		SetBody(map[string]interface{}{
 			"text": text,
 		}).
-		Post(this.address + "/api/sendTemplateToCommonTag")
+		Post(this.handler.GetAddress(ctx) + "/api/sendTemplateToCommonTag")
 
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信通用模板信息，请求异常")
@@ -282,6 +283,6 @@ func (this MsgClient) genJWT(ctx context.Context) (string, error) {
 	claims.IssuedAt = now.Unix()
 	claims.ExpiresAt = now.Unix() + int64(this.retry*3)
 	claims.RequestId = fmt.Sprint(util.GenId())
-	jwtToken, err := util.GenJWT(ctx, this.secret, claims)
+	jwtToken, err := util.GenJWT(ctx, this.handler.GetSecret(ctx), claims)
 	return jwtToken, err
 }
