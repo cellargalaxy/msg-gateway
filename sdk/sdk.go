@@ -26,6 +26,10 @@ type MsgClient struct {
 	httpClient *resty.Client
 }
 
+func NewDefaultMsgClient(handler MsgHandlerInter) (*MsgClient, error) {
+	return NewMsgClient(3*time.Second, 3*time.Second, 3, handler)
+}
+
 func NewMsgClient(timeout, sleep time.Duration, retry int, handler MsgHandlerInter) (*MsgClient, error) {
 	if handler == nil {
 		return nil, fmt.Errorf("MsgHandlerInter为空")
