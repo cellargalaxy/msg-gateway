@@ -1,7 +1,6 @@
 package wx
 
 import (
-	"context"
 	"crypto/tls"
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/config"
@@ -15,15 +14,13 @@ func init() {
 	httpClient = resty.New().
 		SetTimeout(config.Config.Timeout).
 		SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	cxt := context.Background()
-	cxt = util.SetLogId(cxt)
-	flushAccessToken(cxt)
+	ctx := util.CreateLogCtx()
+	flushAccessToken(ctx)
 	go func() {
 		for {
 			time.Sleep(30 * time.Minute)
-			cxt := context.Background()
-			cxt = util.SetLogId(cxt)
-			flushAccessToken(cxt)
+			ctx := util.CreateLogCtx()
+			flushAccessToken(ctx)
 		}
 	}()
 }

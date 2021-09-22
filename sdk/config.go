@@ -1,4 +1,4 @@
-package config
+package sdk
 
 import (
 	"context"
@@ -11,9 +11,9 @@ import (
 	"time"
 )
 
-var Config = model.Config{}
+var config = model.ClientConfig{}
 
-func init() {
+func InitConfig() {
 	ctx := util.CreateLogCtx()
 	client, err := sdk.NewDefaultServerCenterClient(&ServerCenterHandler{})
 	if err != nil {
@@ -25,10 +25,7 @@ func init() {
 	}
 }
 
-func checkAndResetConfig(ctx context.Context, config model.Config) (model.Config, error) {
-	if config.LogLevel <= 0 || config.LogLevel > logrus.TraceLevel {
-		config.LogLevel = logrus.InfoLevel
-	}
+func checkAndResetConfig(ctx context.Context, config model.ClientConfig) (model.ClientConfig, error) {
 	if config.Timeout < 0 {
 		config.Timeout = 3 * time.Second
 	}
@@ -51,22 +48,24 @@ func (this *ServerCenterHandler) GetAddress(ctx context.Context) string {
 func (this *ServerCenterHandler) GetSecret(ctx context.Context) string {
 	return sdk.GetEnvServerCenterSecret(ctx)
 }
+func (this *ServerCenterHandler) GetServerName(ctx context.Context) string {
+	return sdk.GetEnvServerName(ctx) + "_sdk"
+}
 func (this *ServerCenterHandler) GetInterval(ctx context.Context) time.Duration {
 	return 5 * time.Minute
 }
 func (this *ServerCenterHandler) ParseConf(ctx context.Context, object sc_model.ServerConfModel) error {
-	var config model.Config
+	var conf model.ClientConfig
 	err := util.UnmarshalYamlString(object.ConfText, &config)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("反序列化配置异常")
 		return err
 	}
-	config, err = checkAndResetConfig(ctx, config)
+	config, err = checkAndResetConfig(ctx, conf)
 	if err != nil {
 		return err
 	}
-	Config = config
-	logrus.SetLevel(Config.LogLevel)
-	logrus.WithContext(ctx).WithFields(logrus.Fields{"Config": Config}).Info("加载配置")
+	config = conf
+	logrus.WithContext(ctx).WithFields(logrus.Fields{"config": config}).Info("加载配置")
 	return nil
 }

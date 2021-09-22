@@ -15,14 +15,9 @@ import (
 	"time"
 )
 
-type MsgHandlerInter interface {
-	GetAddress(ctx context.Context) string
-	GetSecret(ctx context.Context) string
-}
-
 type MsgClient struct {
 	retry      int
-	handler    MsgHandlerInter
+	handler    model.MsgHandlerInter
 	httpClient *resty.Client
 }
 
@@ -84,7 +79,7 @@ func createHttpClient(timeout, sleep time.Duration, retry int) *resty.Client {
 }
 
 //给配置chatId发送tg信息
-func (this MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) (bool, error) {
+func (this model.MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) (bool, error) {
 	var jsonString string
 	var object bool
 	var err error
