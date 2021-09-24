@@ -15,17 +15,27 @@ import (
 	"time"
 )
 
+type MsgHandler struct {
+}
+
+func (this MsgHandler) GetAddress(ctx context.Context) string {
+	return Config.Address
+}
+func (this MsgHandler) GetSecret(ctx context.Context) string {
+	return Config.Secret
+}
+
 type MsgClient struct {
 	retry      int
 	handler    model.MsgHandlerInter
 	httpClient *resty.Client
 }
 
-func NewDefaultMsgClient(handler MsgHandlerInter) (*MsgClient, error) {
-	return NewMsgClient(3*time.Second, 3*time.Second, 3, handler)
+func NewDefaultMsgClient() (*MsgClient, error) {
+	return NewMsgClient(3*time.Second, 3*time.Second, 3, &MsgHandler{})
 }
 
-func NewMsgClient(timeout, sleep time.Duration, retry int, handler MsgHandlerInter) (*MsgClient, error) {
+func NewMsgClient(timeout, sleep time.Duration, retry int, handler model.MsgHandlerInter) (*MsgClient, error) {
 	if handler == nil {
 		return nil, fmt.Errorf("MsgHandlerInter为空")
 	}
@@ -79,7 +89,7 @@ func createHttpClient(timeout, sleep time.Duration, retry int) *resty.Client {
 }
 
 //给配置chatId发送tg信息
-func (this model.MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) (bool, error) {
+func (this MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) (bool, error) {
 	var jsonString string
 	var object bool
 	var err error
