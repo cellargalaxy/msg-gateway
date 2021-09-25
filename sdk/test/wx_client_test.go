@@ -1,18 +1,27 @@
 package test
 
 import (
-	"context"
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/sdk"
 	"testing"
-	"time"
 )
 
-func TestSendWxTemplateToTag(test *testing.T) {
-	ctx := context.Background()
-	ctx = util.SetLogId(ctx)
+/**
+export server_name=msg_gateway
+export server_center_address=http://127.0.0.1:7557
+export server_center_secret=secret_secret
+
+server_name=msg_gateway;server_center_address=http://127.0.0.1:7557;server_center_secret=secret_secret
+*/
+
+func init() {
 	util.InitLog("msg_gateway.log")
-	wxClient, err := sdk.NewMsgClient(time.Second*3, time.Second*3, 3, "http://127.0.0.1:8990", "secret")
+	sdk.InitConfig(nil)
+}
+
+func TestSendWxTemplateToTag(test *testing.T) {
+	ctx := util.CreateLogCtx()
+	wxClient, err := sdk.NewDefaultMsgClient()
 	if err != nil {
 		test.Error(err)
 		test.FailNow()
@@ -26,10 +35,8 @@ func TestSendWxTemplateToTag(test *testing.T) {
 }
 
 func TestSendTgMsg2ConfigChatId(test *testing.T) {
-	ctx := context.Background()
-	ctx = util.SetLogId(ctx)
-	util.InitLog("msg_gateway.log")
-	wxClient, err := sdk.NewMsgClient(time.Second*3, time.Second*3, 3, "http://127.0.0.1:8990", "secret")
+	ctx := util.CreateLogCtx()
+	wxClient, err := sdk.NewDefaultMsgClient()
 	if err != nil {
 		test.Error(err)
 		test.FailNow()
@@ -48,10 +55,8 @@ k年利率{{k_annual.DATA}}%，定投年利率{{aip_annual.DATA}}%
 }
 
 func TestSendTemplateToCommonTag(test *testing.T) {
-	ctx := context.Background()
-	ctx = util.SetLogId(ctx)
-	util.InitLog("msg_gateway.log")
-	wxClient, err := sdk.NewMsgClient(time.Second*3, time.Second*3, 3, "http://127.0.0.1:8990", "secret")
+	ctx := util.CreateLogCtx()
+	wxClient, err := sdk.NewDefaultMsgClient()
 	if err != nil {
 		test.Error(err)
 		test.FailNow()

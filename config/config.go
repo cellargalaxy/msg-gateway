@@ -15,7 +15,7 @@ var Config = model.Config{}
 
 func init() {
 	ctx := util.CreateLogCtx()
-	client, err := sdk.NewDefaultServerCenterClient(&ServerCenterHandler{})
+	client, err := sdk.NewDefaultServerCenterClient(ctx, &ServerCenterHandler{})
 	if err != nil {
 		panic(err)
 	}

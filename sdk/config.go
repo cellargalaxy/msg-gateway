@@ -18,7 +18,7 @@ func InitConfig(handler sdk.ServerCenterHandlerInter) {
 	if handler == nil {
 		handler = &ServerCenterHandler{}
 	}
-	client, err := sdk.NewDefaultServerCenterClient(handler)
+	client, err := sdk.NewDefaultServerCenterClient(ctx, handler)
 	if err != nil {
 		panic(err)
 	}
