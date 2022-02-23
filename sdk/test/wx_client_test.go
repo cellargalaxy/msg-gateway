@@ -15,7 +15,7 @@ server_name=msg_gateway;server_center_address=http://127.0.0.1:7557;server_cente
 */
 
 func init() {
-	util.InitLog("msg_gateway.log")
+	util.InitDefaultLog()
 	sdk.InitConfig(nil)
 }
 
