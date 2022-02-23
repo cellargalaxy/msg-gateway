@@ -1,0 +1,11 @@
+log_level: info
+retry: 0
+timeout: 0s
+sleep: 0s
+secret: "secret"
+wx_app_id: ""
+wx_app_secret: ""
+wx_common_temp_id: ""
+wx_common_tag_id: 0
+tg_token: ""
+tg_chat_id: 0
