@@ -2,7 +2,6 @@ package model
 
 import (
 	"github.com/cellargalaxy/go_common/util"
-	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -12,7 +11,6 @@ const (
 )
 
 type Config struct {
-	LogLevel       logrus.Level  `yaml:"log_level" json:"log_level"`
 	Retry          int           `yaml:"retry" json:"retry"`
 	Timeout        time.Duration `yaml:"timeout" json:"timeout"`
 	Sleep          time.Duration `yaml:"sleep" json:"sleep"`

@@ -23,9 +23,6 @@ func init() {
 }
 
 func checkAndResetConfig(ctx context.Context, config model.Config) (model.Config, error) {
-	if config.LogLevel <= 0 || config.LogLevel > logrus.TraceLevel {
-		config.LogLevel = logrus.InfoLevel
-	}
 	if config.Timeout < 0 {
 		config.Timeout = 3 * time.Second
 	}
@@ -66,7 +63,6 @@ func (this *ServerCenterHandler) ParseConf(ctx context.Context, object sc_model.
 		return err
 	}
 	Config = config
-	logrus.SetLevel(Config.LogLevel)
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"Config": Config}).Info("加载配置")
 	return nil
 }
