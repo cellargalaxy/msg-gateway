@@ -22,10 +22,7 @@ func InitConfig(handler sdk.ServerCenterHandlerInter) {
 	if err != nil {
 		panic(err)
 	}
-	_, err = client.StartConfWithInitConf(ctx)
-	if err != nil {
-		panic(err)
-	}
+	client.StartConfWithInitConf(ctx)
 }
 
 func checkAndResetConfig(ctx context.Context, config model.ClientConfig) (model.ClientConfig, error) {

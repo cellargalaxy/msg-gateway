@@ -19,10 +19,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	_, err = client.StartConfWithInitConf(ctx)
-	if err != nil {
-		panic(err)
-	}
+	client.StartConfWithInitConf(ctx)
 }
 
 func checkAndResetConfig(ctx context.Context, config model.Config) (model.Config, error) {
@@ -52,7 +49,7 @@ func (this *ServerCenterHandler) GetSecret(ctx context.Context) string {
 	return sdk.GetEnvServerCenterSecret(ctx)
 }
 func (this *ServerCenterHandler) GetServerName(ctx context.Context) string {
-	return sdk.GetEnvServerName(ctx)
+	return sdk.GetEnvServerName(ctx, model.DefaultServerName)
 }
 func (this *ServerCenterHandler) GetInterval(ctx context.Context) time.Duration {
 	return 5 * time.Minute

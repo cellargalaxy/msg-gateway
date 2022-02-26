@@ -4,12 +4,13 @@ import (
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/config"
 	"github.com/cellargalaxy/msg_gateway/controller"
+	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/sirupsen/logrus"
 )
 
 func init() {
 	logrus.SetLevel(config.Config.LogLevel)
-	util.InitDefaultLog()
+	util.InitDefaultLog(model.DefaultServerName)
 }
 
 /**

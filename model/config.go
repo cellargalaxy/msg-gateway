@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	ListenAddress = ":8990"
+	DefaultServerName = "msg_gateway"
+	ListenAddress     = ":8990"
 )
 
 type Config struct {
