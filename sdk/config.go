@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+const (
+	DefaultServerName = "msg_gateway_sdk"
+)
+
 var Config = model.ClientConfig{}
 
 func InitConfig(handler sdk.ServerCenterHandlerInter) {
@@ -29,10 +33,7 @@ func checkAndResetConfig(ctx context.Context, config model.ClientConfig) (model.
 	if config.Timeout < 0 {
 		config.Timeout = 3 * time.Second
 	}
-	if config.Sleep < 0 {
-		config.Sleep = 3 * time.Second
-	}
-	if config.Address == "" {
+	if len(config.Addresses) == 0 {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("address为空")
 		return config, fmt.Errorf("address为空")
 	}
@@ -46,17 +47,11 @@ func checkAndResetConfig(ctx context.Context, config model.ClientConfig) (model.
 type ServerCenterHandler struct {
 }
 
-func (this *ServerCenterHandler) GetAddress(ctx context.Context) string {
-	return sdk.GetEnvServerCenterAddress(ctx)
-}
-func (this *ServerCenterHandler) GetSecret(ctx context.Context) string {
-	return sdk.GetEnvServerCenterSecret(ctx)
-}
 func (this *ServerCenterHandler) GetServerName(ctx context.Context) string {
-	return "msg_gateway_sdk"
+	return DefaultServerName
 }
 func (this *ServerCenterHandler) GetInterval(ctx context.Context) time.Duration {
-	return 5 * time.Minute
+	return time.Minute * 5
 }
 func (this *ServerCenterHandler) ParseConf(ctx context.Context, object sc_model.ServerConfModel) error {
 	var config model.ClientConfig

@@ -2,16 +2,15 @@ package sdk
 
 import (
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/cellargalaxy/go_common/consd"
-	common_model "github.com/cellargalaxy/go_common/model"
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
+	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -19,73 +18,34 @@ type MsgHandler struct {
 }
 
 func (this MsgHandler) GetAddress(ctx context.Context) string {
-	return Config.Address
+	list := Config.Addresses
+	if len(list) == 0 {
+		return ""
+	}
+	index := rand.Intn(len(list))
+	return list[index]
 }
 func (this MsgHandler) GetSecret(ctx context.Context) string {
 	return Config.Secret
 }
 
 type MsgClient struct {
+	timeout    time.Duration
 	retry      int
 	handler    model.MsgHandlerInter
 	httpClient *resty.Client
 }
 
 func NewDefaultMsgClient() (*MsgClient, error) {
-	return NewMsgClient(3*time.Second, 3*time.Second, 3, &MsgHandler{})
+	return NewMsgClient(3*time.Second, 3, &MsgHandler{})
 }
 
-func NewMsgClient(timeout, sleep time.Duration, retry int, handler model.MsgHandlerInter) (*MsgClient, error) {
+func NewMsgClient(timeout time.Duration, retry int, handler model.MsgHandlerInter) (*MsgClient, error) {
 	if handler == nil {
 		return nil, fmt.Errorf("MsgHandlerInter为空")
 	}
-	httpClient := createHttpClient(timeout, sleep, retry)
-	return &MsgClient{retry: retry, handler: handler, httpClient: httpClient}, nil
-}
-
-func createHttpClient(timeout, sleep time.Duration, retry int) *resty.Client {
-	httpClient := resty.New().
-		SetTimeout(timeout).
-		SetRetryCount(retry).
-		SetRetryWaitTime(sleep).
-		SetRetryMaxWaitTime(5 * time.Minute).
-		AddRetryCondition(func(response *resty.Response, err error) bool {
-			ctx := util.CreateLogCtx()
-			if response != nil && response.Request != nil {
-				ctx = response.Request.Context()
-			}
-			var statusCode int
-			if response != nil {
-				statusCode = response.StatusCode()
-			}
-			retry := statusCode != http.StatusOK || err != nil
-			if retry {
-				logrus.WithContext(ctx).WithFields(logrus.Fields{"statusCode": statusCode, "err": err}).Warn("HTTP请求异常，进行重试")
-			}
-			return retry
-		}).
-		SetRetryAfter(func(client *resty.Client, response *resty.Response) (time.Duration, error) {
-			ctx := util.CreateLogCtx()
-			if response != nil && response.Request != nil {
-				ctx = response.Request.Context()
-			}
-			var attempt int
-			if response != nil && response.Request != nil {
-				attempt = response.Request.Attempt
-			}
-			if attempt > retry {
-				logrus.WithContext(ctx).WithFields(logrus.Fields{"attempt": attempt}).Error("HTTP请求异常，超过最大重试次数")
-				return 0, fmt.Errorf("HTTP请求异常，超过最大重试次数")
-			}
-			duration := util.WareDuration(sleep)
-			for i := 0; i < attempt-1; i++ {
-				duration *= 10
-			}
-			logrus.WithContext(ctx).WithFields(logrus.Fields{"attempt": attempt, "duration": duration}).Warn("HTTP请求异常，休眠重试")
-			return duration, nil
-		}).
-		SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	return httpClient
+	httpClient := util.CreateNotTryHttpClient(timeout)
+	return &MsgClient{timeout: timeout, retry: retry, handler: handler, httpClient: httpClient}, nil
 }
 
 //给配置chatId发送tg信息
@@ -122,7 +82,7 @@ func (this MsgClient) analysisSendTgMsg2ConfigChatId(ctx context.Context, jsonSt
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err, "jsonString": jsonString}).Error("给配置chatId发送tg信息，解析响应异常")
 		return false, fmt.Errorf("给配置chatId发送tg信息，解析响应异常")
 	}
-	if response.Code != consd.HttpSuccessCode {
+	if response.Code != util.HttpSuccessCode {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"jsonString": jsonString}).Error("给配置chatId发送tg信息，失败")
 		return false, fmt.Errorf("给配置chatId发送tg信息，失败: %+v", jsonString)
 	}
@@ -132,13 +92,13 @@ func (this MsgClient) analysisSendTgMsg2ConfigChatId(ctx context.Context, jsonSt
 //给配置chatId发送tg信息
 func (this MsgClient) requestSendTgMsg2ConfigChatId(ctx context.Context, jwtToken string, text string) (string, error) {
 	response, err := this.httpClient.R().SetContext(ctx).
+		SetHeader(util.LogIdKey, util.GetLogIdString(ctx)).
+		SetHeader(util.GenAuthorizationHeader(ctx, jwtToken)).
 		SetHeader("Content-Type", "application/json;CHARSET=utf-8").
-		SetHeader("Authorization", "Bearer "+jwtToken).
-		SetHeader(util.LogIdKey, fmt.Sprint(util.GetLogId(ctx))).
 		SetBody(map[string]interface{}{
 			"text": text,
 		}).
-		Post(this.handler.GetAddress(ctx) + "/api/sendTgMsg2ConfigChatId")
+		Post(this.GetUrl(ctx, "/api/sendTgMsg2ConfigChatId"))
 
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("给配置chatId发送tg信息，请求异常")
@@ -192,7 +152,7 @@ func (this MsgClient) analysisSendWxTemplateToTag(ctx context.Context, jsonStrin
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err, "jsonString": jsonString}).Error("发送微信模板信息，解析响应异常")
 		return false, fmt.Errorf("发送微信模板信息，解析响应异常")
 	}
-	if response.Code != consd.HttpSuccessCode {
+	if response.Code != util.HttpSuccessCode {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"jsonString": jsonString}).Error("发送微信模板信息，失败")
 		return false, fmt.Errorf("发送微信模板信息，失败: %+v", jsonString)
 	}
@@ -202,16 +162,16 @@ func (this MsgClient) analysisSendWxTemplateToTag(ctx context.Context, jsonStrin
 //发送微信模板信息
 func (this MsgClient) requestSendWxTemplateToTag(ctx context.Context, jwtToken string, templateId string, tagId int, url string, data map[string]interface{}) (string, error) {
 	response, err := this.httpClient.R().SetContext(ctx).
+		SetHeader(util.LogIdKey, util.GetLogIdString(ctx)).
+		SetHeader(util.GenAuthorizationHeader(ctx, jwtToken)).
 		SetHeader("Content-Type", "application/json;CHARSET=utf-8").
-		SetHeader("Authorization", "Bearer "+jwtToken).
-		SetHeader(util.LogIdKey, fmt.Sprint(util.GetLogId(ctx))).
 		SetBody(map[string]interface{}{
 			"template_id": templateId,
 			"tag_id":      tagId,
 			"url":         url,
 			"data":        data,
 		}).
-		Post(this.handler.GetAddress(ctx) + "/api/sendTemplateToTag")
+		Post(this.GetUrl(ctx, "/api/sendTemplateToTag"))
 
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信模板信息，请求异常")
@@ -260,13 +220,13 @@ func (this MsgClient) analysisSendTemplateToCommonTag(ctx context.Context, jsonS
 //发送微信通用模板信息
 func (this MsgClient) requestSendTemplateToCommonTag(ctx context.Context, jwtToken string, text string) (string, error) {
 	response, err := this.httpClient.R().SetContext(ctx).
+		SetHeader(util.LogIdKey, util.GetLogIdString(ctx)).
+		SetHeader(util.GenAuthorizationHeader(ctx, jwtToken)).
 		SetHeader("Content-Type", "application/json;CHARSET=utf-8").
-		SetHeader("Authorization", "Bearer "+jwtToken).
-		SetHeader(util.LogIdKey, fmt.Sprint(util.GetLogId(ctx))).
 		SetBody(map[string]interface{}{
 			"text": text,
 		}).
-		Post(this.handler.GetAddress(ctx) + "/api/sendTemplateToCommonTag")
+		Post(this.GetUrl(ctx, "/api/sendTemplateToCommonTag"))
 
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信通用模板信息，请求异常")
@@ -285,13 +245,16 @@ func (this MsgClient) requestSendTemplateToCommonTag(ctx context.Context, jwtTok
 	}
 	return body, nil
 }
+func (this *MsgClient) GetUrl(ctx context.Context, path string) string {
+	return this.getUrl(ctx, this.handler.GetAddress(ctx), path)
+}
+func (this *MsgClient) getUrl(ctx context.Context, address, path string) string {
+	if strings.HasSuffix(address, "/") && strings.HasPrefix(path, "/") && len(path) > 0 {
+		path = path[1:]
+	}
+	return address + path
+}
 
-func (this MsgClient) genJWT(ctx context.Context) (string, error) {
-	now := time.Now()
-	var claims common_model.Claims
-	claims.IssuedAt = now.Unix()
-	claims.ExpiresAt = now.Unix() + int64(this.retry*3)
-	claims.RequestId = fmt.Sprint(util.GenId())
-	jwtToken, err := util.GenJWT(ctx, this.handler.GetSecret(ctx), claims)
-	return jwtToken, err
+func (this *MsgClient) genJWT(ctx context.Context) (string, error) {
+	return util.GenDefaultJWT(ctx, this.timeout*time.Duration(this.retry+1), this.handler.GetSecret(ctx))
 }

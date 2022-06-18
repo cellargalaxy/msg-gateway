@@ -7,11 +7,10 @@ import (
 )
 
 type ClientConfig struct {
-	Retry   int           `yaml:"retry" json:"retry"`
-	Timeout time.Duration `yaml:"timeout" json:"timeout"`
-	Sleep   time.Duration `yaml:"sleep" json:"sleep"`
-	Address string        `yaml:"address" json:"address"`
-	Secret  string        `yaml:"secret" json:"-"`
+	Retry     int           `yaml:"retry" json:"retry"`
+	Timeout   time.Duration `yaml:"timeout" json:"timeout"`
+	Addresses []string      `yaml:"addresses" json:"addresses"`
+	Secret    string        `yaml:"secret" json:"-"`
 }
 
 func (this ClientConfig) String() string {

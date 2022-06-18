@@ -2,6 +2,7 @@ package test
 
 import (
 	"github.com/cellargalaxy/go_common/util"
+	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/cellargalaxy/msg_gateway/sdk"
 	"testing"
 )
@@ -15,7 +16,7 @@ server_name=msg_gateway;server_center_address=http://127.0.0.1:7557;server_cente
 */
 
 func init() {
-	util.InitDefaultLog()
+	util.InitDefaultLog(model.DefaultServerName)
 	sdk.InitConfig(nil)
 }
 
