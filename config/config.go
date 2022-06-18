@@ -39,12 +39,6 @@ func checkAndResetConfig(ctx context.Context, config model.Config) (model.Config
 type ServerCenterHandler struct {
 }
 
-func (this *ServerCenterHandler) GetAddress(ctx context.Context) string {
-	return sdk.GetEnvServerCenterAddress(ctx)
-}
-func (this *ServerCenterHandler) GetSecret(ctx context.Context) string {
-	return sdk.GetEnvServerCenterSecret(ctx)
-}
 func (this *ServerCenterHandler) GetServerName(ctx context.Context) string {
 	return sdk.GetEnvServerName(ctx, model.DefaultServerName)
 }
@@ -70,7 +64,4 @@ func (this *ServerCenterHandler) GetDefaultConf(ctx context.Context) string {
 	var config model.Config
 	config, _ = checkAndResetConfig(ctx, config)
 	return util.ToYamlString(config)
-}
-func (this *ServerCenterHandler) GetLocalFilePath(ctx context.Context) string {
-	return ""
 }
