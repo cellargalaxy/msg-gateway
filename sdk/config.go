@@ -8,76 +8,48 @@ import (
 	sc_model "github.com/cellargalaxy/server_center/model"
 	"github.com/cellargalaxy/server_center/sdk"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
-var Config = model.ClientConfig{}
+var Config = model.Config{}
 
-func InitConfig(handler sdk.ServerCenterHandlerInter) {
-	ctx := util.CreateLogCtx()
-	if handler == nil {
-		handler = &ServerCenterHandler{}
-	}
-	client, err := sdk.NewDefaultServerCenterClient(ctx, handler)
+func initConfig(ctx context.Context) {
+	var err error
+
+	var handler ServerCenterHandler
+	client, err := sdk.NewDefaultServerCenterClient(ctx, &handler)
 	if err != nil {
 		panic(err)
 	}
+	if client == nil {
+		panic("创建ServerCenterClient为空")
+	}
 	client.StartConfWithInitConf(ctx)
-}
-
-func checkAndResetConfig(ctx context.Context, config model.ClientConfig) (model.ClientConfig, error) {
-	if config.Timeout < 0 {
-		config.Timeout = 3 * time.Second
-	}
-	if config.Sleep < 0 {
-		config.Sleep = 3 * time.Second
-	}
-	if config.Address == "" {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("address为空")
-		return config, fmt.Errorf("address为空")
-	}
-	if config.Secret == "" {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("secret为空")
-		return config, fmt.Errorf("secret为空")
-	}
-	return config, nil
+	logrus.WithContext(ctx).WithFields(logrus.Fields{"Config": Config}).Info("加载配置")
 }
 
 type ServerCenterHandler struct {
+	sdk.ServerCenterDefaultHandler
 }
 
-func (this *ServerCenterHandler) GetAddress(ctx context.Context) string {
-	return sdk.GetEnvServerCenterAddress(ctx)
-}
-func (this *ServerCenterHandler) GetSecret(ctx context.Context) string {
-	return sdk.GetEnvServerCenterSecret(ctx)
-}
 func (this *ServerCenterHandler) GetServerName(ctx context.Context) string {
-	return "msg_gateway_sdk"
-}
-func (this *ServerCenterHandler) GetInterval(ctx context.Context) time.Duration {
-	return 5 * time.Minute
+	return model.DefaultServerName
 }
 func (this *ServerCenterHandler) ParseConf(ctx context.Context, object sc_model.ServerConfModel) error {
-	var config model.ClientConfig
+	var config model.Config
 	err := util.UnmarshalYamlString(object.ConfText, &config)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("反序列化配置异常")
 		return err
 	}
-	config, err = checkAndResetConfig(ctx, config)
-	if err != nil {
-		return err
+	if len(config.Addresses) == 0 {
+		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("反序列化配置，Addresses为空")
+		return fmt.Errorf("反序列化配置，Addresses为空")
 	}
 	Config = config
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"Config": Config}).Info("加载配置")
 	return nil
 }
 func (this *ServerCenterHandler) GetDefaultConf(ctx context.Context) string {
-	var config model.ClientConfig
-	config, _ = checkAndResetConfig(ctx, config)
+	var config model.Config
 	return util.ToYamlString(config)
-}
-func (this *ServerCenterHandler) GetLocalFilePath(ctx context.Context) string {
-	return ""
 }

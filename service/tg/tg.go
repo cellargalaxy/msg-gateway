@@ -2,7 +2,7 @@ package tg
 
 import (
 	"context"
-	"crypto/tls"
+	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/config"
 	"github.com/go-resty/resty/v2"
 )
@@ -10,9 +10,7 @@ import (
 var httpClient *resty.Client
 
 func init() {
-	httpClient = resty.New().
-		SetTimeout(config.Config.Timeout).
-		SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
+	httpClient = util.HttpClientNotRetry
 }
 
 //https://www.cnblogs.com/kainhuck/p/13576012.html

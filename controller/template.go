@@ -15,7 +15,7 @@ func listAllTemplate(ctx *gin.Context) {
 	err := ctx.BindQuery(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("获取全部模板，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("获取全部模板")
@@ -28,7 +28,7 @@ func sendTemplateToTag(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("给标签用户发送模板消息，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("给标签用户发送模板消息")
@@ -41,7 +41,7 @@ func sendTemplateToCommonTag(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("给通用标签用户发送模板消息，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("给通用标签用户发送模板消息")

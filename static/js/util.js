@@ -36,7 +36,7 @@ function enJwt() {
     const exp = getTokenExp()
     const header = {'typ': 'JWT', 'alg': 'HS256'}
     const headerJson = JSON.stringify(header)
-    const payload = {'iat': timeStamp, 'exp': timeStamp + exp, 'allow_re_request': false, 'request_id': genId()}
+    const payload = {'iat': timeStamp, 'exp': timeStamp + exp, 'reqid': genId()}
     const payloadJson = JSON.stringify(payload)
     const secret = getSecret()
     const secretHex = enSha256Hex(secret)

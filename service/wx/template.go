@@ -30,6 +30,10 @@ func SendTemplateToTag(ctx context.Context, templateId string, tagId int, url st
 	if err != nil {
 		return nil, err
 	}
+	if len(openIds) == 0 {
+		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Warn("给标签用户发送模板消息，openIds为空")
+		return nil, nil
+	}
 	var failOpenIds []string
 	for i := range openIds {
 		success, _ := SendTemplate(ctx, openIds[i], templateId, url, data)

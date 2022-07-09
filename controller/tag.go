@@ -15,7 +15,7 @@ func createTag(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("创建标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("创建标签")
@@ -28,7 +28,7 @@ func deleteTag(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("删除标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("删除标签")
@@ -41,7 +41,7 @@ func listAllTag(ctx *gin.Context) {
 	err := ctx.BindQuery(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("获取所有标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("获取所有标签")
@@ -54,7 +54,7 @@ func addTagToUser(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("为用户加标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("为用户加标签")
@@ -67,7 +67,7 @@ func deleteTagFromUser(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("为用户删标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateErrResponse(err.Error()))
+		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("为用户删标签")
