@@ -30,6 +30,7 @@ fi
 
 echo
 echo "server_name: $server_name"
+echo "server_center_address: $server_center_address"
 echo "listen_port: $listen_port"
 echo "input any key go on, or control+c over"
 read
@@ -49,6 +50,7 @@ docker run -d \
   --restart=always \
   --name $server_name \
   -v log:/log \
+  -v $server_name'_resource':/resource \
   -p $listen_port:8990 \
   -e server_name=$server_name \
   -e server_center_address=$server_center_address \

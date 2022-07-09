@@ -13,7 +13,7 @@ func TestListAllUserInfo(test *testing.T) {
 	ctx = util.SetLogId(ctx)
 	request := model.ListAllUserInfoRequest{}
 	response, err := controller.ListAllUserInfo(ctx, request)
-	test.Logf("response: %+v\r\n", util.ToJsonIndent(response))
+	test.Logf("response: %+v\r\n", util.ToJsonIndentString(response))
 	if err != nil {
 		test.Error(err)
 		test.FailNow()
