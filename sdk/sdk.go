@@ -46,20 +46,19 @@ func (this MsgHandler) GetSecret(ctx context.Context) string {
 type MsgClient struct {
 	timeout    time.Duration
 	retry      int
-	handler    MsgHandlerInter
 	httpClient *resty.Client
+	handler    MsgHandlerInter
 }
 
 func NewDefaultMsgClient(ctx context.Context) (*MsgClient, error) {
-	return NewMsgClient(ctx, util.TimeoutDefault, util.RetryDefault, &MsgHandler{})
+	return NewMsgClient(ctx, util.TimeoutDefault, util.RetryDefault, util.GetHttpClient(), &MsgHandler{})
 }
 
-func NewMsgClient(ctx context.Context, timeout time.Duration, retry int, handler MsgHandlerInter) (*MsgClient, error) {
+func NewMsgClient(ctx context.Context, timeout time.Duration, retry int, httpClient *resty.Client, handler MsgHandlerInter) (*MsgClient, error) {
 	if handler == nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("创建MsgClient，handler为空")
 		return nil, fmt.Errorf("MsgHandlerInter为空")
 	}
-	httpClient := util.GetHttpClient()
 	return &MsgClient{timeout: timeout, retry: retry, handler: handler, httpClient: httpClient}, nil
 }
 
