@@ -10,7 +10,7 @@ import (
 var httpClient *resty.Client
 
 func init() {
-	httpClient = util.HttpClientNotRetry
+	httpClient = util.GetHttpClient()
 }
 
 //https://www.cnblogs.com/kainhuck/p/13576012.html

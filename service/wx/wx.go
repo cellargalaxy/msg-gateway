@@ -9,7 +9,7 @@ import (
 var httpClient *resty.Client
 
 func init() {
-	httpClient = util.HttpClientNotRetry
+	httpClient = util.GetHttpClient()
 	ctx := util.GenCtx()
 	flushAccessToken(ctx)
 	go func() {

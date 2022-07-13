@@ -51,7 +51,7 @@ type MsgClient struct {
 }
 
 func NewDefaultMsgClient(ctx context.Context) (*MsgClient, error) {
-	return NewMsgClient(ctx, time.Second*3, 3, &MsgHandler{})
+	return NewMsgClient(ctx, util.TimeoutDefault, util.RetryDefault, &MsgHandler{})
 }
 
 func NewMsgClient(ctx context.Context, timeout time.Duration, retry int, handler MsgHandlerInter) (*MsgClient, error) {
@@ -59,7 +59,7 @@ func NewMsgClient(ctx context.Context, timeout time.Duration, retry int, handler
 		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("创建MsgClient，handler为空")
 		return nil, fmt.Errorf("MsgHandlerInter为空")
 	}
-	httpClient := util.HttpClientNotRetry
+	httpClient := util.GetHttpClient()
 	return &MsgClient{timeout: timeout, retry: retry, handler: handler, httpClient: httpClient}, nil
 }
 
