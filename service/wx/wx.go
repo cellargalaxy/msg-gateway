@@ -14,7 +14,7 @@ func init() {
 	flushAccessToken(ctx)
 	go func() {
 		for {
-			time.Sleep(30 * time.Minute)
+			util.Sleep(ctx, 30*time.Minute)
 			ctx := util.GenCtx()
 			flushAccessToken(ctx)
 		}
