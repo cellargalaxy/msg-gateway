@@ -3,10 +3,15 @@ module github.com/cellargalaxy/msg_gateway
 go 1.16
 
 require (
-	github.com/cellargalaxy/go_common v0.0.0-20220805133712-43d410f5fd76
-	github.com/cellargalaxy/server_center v0.0.0-20220805134104-45f0a5380771
+	github.com/cellargalaxy/go_common v0.0.0-20220805165827-2422a7f81793
+	github.com/cellargalaxy/server_center v0.0.0-20220805181201-ca6c62a8456a
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/sirupsen/logrus v1.9.0
+)
+
+replace (
+	github.com/cellargalaxy/go_common => /home/meltsprout/code/go_common
+	github.com/cellargalaxy/server_center => /home/meltsprout/code/server_center
 )
