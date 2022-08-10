@@ -15,9 +15,9 @@ func listAllUserInfo(ctx *gin.Context) {
 	err := ctx.BindQuery(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("获取全部用户信息，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
+		ctx.JSON(http.StatusOK, util.NewHttpResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("获取全部用户信息")
-	ctx.JSON(http.StatusOK, util.CreateResponse(controller.ListAllUserInfo(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.ListAllUserInfo(ctx, request)))
 }

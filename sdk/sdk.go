@@ -2,13 +2,12 @@ package sdk
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	common_model "github.com/cellargalaxy/go_common/model"
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
-	"net/http"
 	"strings"
 	"time"
 )
@@ -63,174 +62,66 @@ func NewMsgClient(ctx context.Context, timeout time.Duration, retry int, httpCli
 }
 
 //给配置chatId发送tg信息
-func (this *MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) (bool, error) {
+func (this *MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) error {
 	ctx = util.SetReqId(ctx)
-	var jsonString string
-	var object bool
-	var err error
-	for i := 0; i < this.retry; i++ {
-		jsonString, err = this.requestSendTgMsg2ConfigChatId(ctx, text)
-		if err == nil {
-			object, err = this.analysisSendTgMsg2ConfigChatId(ctx, jsonString)
-			if err == nil {
-				return object, err
-			}
-		}
-	}
-	return object, err
-}
-func (this *MsgClient) analysisSendTgMsg2ConfigChatId(ctx context.Context, jsonString string) (bool, error) {
 	type Response struct {
-		Code int                                 `json:"code"`
-		Msg  string                              `json:"msg"`
+		common_model.HttpResponse
 		Data model.SendTgMsg2ConfigChatIdRequest `json:"data"`
 	}
 	var response Response
-	err := json.Unmarshal([]byte(jsonString), &response)
-	if err != nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err, "jsonString": jsonString}).Error("给配置chatId发送tg信息，解析响应异常")
-		return false, fmt.Errorf("给配置chatId发送tg信息，解析响应异常")
-	}
-	if response.Code != util.HttpSuccessCode {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"jsonString": jsonString}).Error("给配置chatId发送tg信息，失败")
-		return false, fmt.Errorf("给配置chatId发送tg信息，失败: %+v", jsonString)
-	}
-	return true, nil
-}
-func (this *MsgClient) requestSendTgMsg2ConfigChatId(ctx context.Context, text string) (string, error) {
-	response, err := this.httpClient.R().SetContext(ctx).
-		SetHeader(this.genJWT(ctx)).
-		SetBody(map[string]interface{}{
-			"text": text,
-		}).
-		Post(this.GetUrl(ctx, model.SendTgMsg2ConfigChatIdPath))
-
-	if err != nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("给配置chatId发送tg信息，请求异常")
-		return "", fmt.Errorf("给配置chatId发送tg信息，请求异常")
-	}
-	if response == nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("给配置chatId发送tg信息，响应为空")
-		return "", fmt.Errorf("给配置chatId发送tg信息，响应为空")
-	}
-	statusCode := response.StatusCode()
-	body := response.String()
-	logrus.WithContext(ctx).WithFields(logrus.Fields{"statusCode": statusCode, "body": body}).Info("给配置chatId发送tg信息，响应")
-	if statusCode != http.StatusOK {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"StatusCode": statusCode}).Error("给配置chatId发送tg信息，响应码失败")
-		return "", fmt.Errorf("给配置chatId发送tg信息，响应码失败: %+v", statusCode)
-	}
-	return body, nil
+	err := util.HttpApiRetry(ctx, "给配置chatId发送tg信息", this.retry, []time.Duration{time.Microsecond}, &response, func() (*resty.Response, error) {
+		response, err := this.httpClient.R().SetContext(ctx).
+			SetHeader(this.genJWT(ctx)).
+			SetBody(map[string]interface{}{
+				"text": text,
+			}).
+			Post(this.GetUrl(ctx, model.SendTgMsg2ConfigChatIdPath))
+		return response, err
+	})
+	return err
 }
 
 //发送微信模板信息
-func (this *MsgClient) SendWxTemplateToTag(ctx context.Context, templateId string, tagId int, url string, data map[string]interface{}) (bool, error) {
+func (this *MsgClient) SendWxTemplateToTag(ctx context.Context, templateId string, tagId int, url string, data map[string]interface{}) error {
 	ctx = util.SetReqId(ctx)
-	var jsonString string
-	var object bool
-	var err error
-	for i := 0; i < this.retry; i++ {
-		jsonString, err = this.requestSendWxTemplateToTag(ctx, templateId, tagId, url, data)
-		if err == nil {
-			object, err = this.analysisSendWxTemplateToTag(ctx, jsonString)
-			if err == nil {
-				return object, err
-			}
-		}
-	}
-	return object, err
-}
-func (this *MsgClient) analysisSendWxTemplateToTag(ctx context.Context, jsonString string) (bool, error) {
 	type Response struct {
-		Code int                             `json:"code"`
-		Msg  string                          `json:"msg"`
+		common_model.HttpResponse
 		Data model.SendTemplateToTagResponse `json:"data"`
 	}
 	var response Response
-	err := json.Unmarshal([]byte(jsonString), &response)
-	if err != nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err, "jsonString": jsonString}).Error("发送微信模板信息，解析响应异常")
-		return false, fmt.Errorf("发送微信模板信息，解析响应异常")
-	}
-	if response.Code != util.HttpSuccessCode {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"jsonString": jsonString}).Error("发送微信模板信息，失败")
-		return false, fmt.Errorf("发送微信模板信息，失败: %+v", jsonString)
-	}
-	return true, nil
-}
-func (this *MsgClient) requestSendWxTemplateToTag(ctx context.Context, templateId string, tagId int, url string, data map[string]interface{}) (string, error) {
-	response, err := this.httpClient.R().SetContext(ctx).
-		SetHeader(this.genJWT(ctx)).
-		SetBody(map[string]interface{}{
-			"template_id": templateId,
-			"tag_id":      tagId,
-			"url":         url,
-			"data":        data,
-		}).
-		Post(this.GetUrl(ctx, model.SendTemplateToTagPath))
-
-	if err != nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信模板信息，请求异常")
-		return "", fmt.Errorf("发送微信模板信息，请求异常")
-	}
-	if response == nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信模板信息，响应为空")
-		return "", fmt.Errorf("发送微信模板信息，响应为空")
-	}
-	statusCode := response.StatusCode()
-	body := response.String()
-	logrus.WithContext(ctx).WithFields(logrus.Fields{"statusCode": statusCode, "body": body}).Info("发送微信模板信息，响应")
-	if statusCode != http.StatusOK {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"StatusCode": statusCode}).Error("发送微信模板信息，响应码失败")
-		return "", fmt.Errorf("发送微信模板信息，响应码失败: %+v", statusCode)
-	}
-	return body, nil
+	err := util.HttpApiRetry(ctx, "发送微信模板信息", this.retry, []time.Duration{time.Microsecond}, &response, func() (*resty.Response, error) {
+		response, err := this.httpClient.R().SetContext(ctx).
+			SetHeader(this.genJWT(ctx)).
+			SetBody(map[string]interface{}{
+				"template_id": templateId,
+				"tag_id":      tagId,
+				"url":         url,
+				"data":        data,
+			}).
+			Post(this.GetUrl(ctx, model.SendTemplateToTagPath))
+		return response, err
+	})
+	return err
 }
 
 //发送微信通用模板信息
-func (this *MsgClient) SendTemplateToCommonTag(ctx context.Context, text string) (bool, error) {
+func (this *MsgClient) SendTemplateToCommonTag(ctx context.Context, text string) error {
 	ctx = util.SetReqId(ctx)
-	var jsonString string
-	var object bool
-	var err error
-	for i := 0; i < this.retry; i++ {
-		jsonString, err = this.requestSendTemplateToCommonTag(ctx, text)
-		if err == nil {
-			object, err = this.analysisSendTemplateToCommonTag(ctx, jsonString)
-			if err == nil {
-				return object, err
-			}
-		}
+	type Response struct {
+		common_model.HttpResponse
+		Data model.SendTemplateToTagResponse `json:"data"`
 	}
-	return object, err
-}
-func (this *MsgClient) analysisSendTemplateToCommonTag(ctx context.Context, jsonString string) (bool, error) {
-	return this.analysisSendWxTemplateToTag(ctx, jsonString)
-}
-func (this *MsgClient) requestSendTemplateToCommonTag(ctx context.Context, text string) (string, error) {
-	response, err := this.httpClient.R().SetContext(ctx).
-		SetHeader(this.genJWT(ctx)).
-		SetBody(map[string]interface{}{
-			"text": text,
-		}).
-		Post(this.GetUrl(ctx, model.SendTemplateToCommonTagPath))
-
-	if err != nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信通用模板信息，请求异常")
-		return "", fmt.Errorf("发送微信通用模板信息，请求异常")
-	}
-	if response == nil {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err}).Error("发送微信通用模板信息，响应为空")
-		return "", fmt.Errorf("发送微信通用模板信息，响应为空")
-	}
-	statusCode := response.StatusCode()
-	body := response.String()
-	logrus.WithContext(ctx).WithFields(logrus.Fields{"statusCode": statusCode, "body": body}).Info("发送微信通用模板信息，响应")
-	if statusCode != http.StatusOK {
-		logrus.WithContext(ctx).WithFields(logrus.Fields{"StatusCode": statusCode}).Error("发送微信通用模板信息，响应码失败")
-		return "", fmt.Errorf("发送微信通用模板信息，响应码失败: %+v", statusCode)
-	}
-	return body, nil
+	var response Response
+	err := util.HttpApiRetry(ctx, "发送微信通用模板信息", this.retry, []time.Duration{time.Microsecond}, &response, func() (*resty.Response, error) {
+		response, err := this.httpClient.R().SetContext(ctx).
+			SetHeader(this.genJWT(ctx)).
+			SetBody(map[string]interface{}{
+				"text": text,
+			}).
+			Post(this.GetUrl(ctx, model.SendTemplateToCommonTagPath))
+		return response, err
+	})
+	return err
 }
 
 func (this *MsgClient) GetUrl(ctx context.Context, path string) string {

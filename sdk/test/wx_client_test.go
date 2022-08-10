@@ -21,8 +21,7 @@ func init() {
 
 func TestSendWxTemplateToTag(test *testing.T) {
 	ctx := util.GenCtx()
-	response, err := sdk.Client.SendWxTemplateToTag(ctx, "7ub0o1jXJGfar5Zaj-imwwoisFiH6xW6CsS4pKWjnKc", 109, "", map[string]interface{}{"zhi": 111})
-	test.Logf("response: %+v\r\n", util.ToJsonIndentString(response))
+	err := sdk.Client.SendWxTemplateToTag(ctx, "7ub0o1jXJGfar5Zaj-imwwoisFiH6xW6CsS4pKWjnKc", 109, "", map[string]interface{}{"zhi": 111})
 	if err != nil {
 		test.Error(err)
 		test.FailNow()
@@ -31,8 +30,7 @@ func TestSendWxTemplateToTag(test *testing.T) {
 
 func TestSendTgMsg2ConfigChatId(test *testing.T) {
 	ctx := util.GenCtx()
-	response, err := sdk.Client.SendTgMsg2ConfigChatId(ctx, `啊啊啊`)
-	test.Logf("response: %+v\r\n", util.ToJsonIndentString(response))
+	err := sdk.Client.SendTgMsg2ConfigChatId(ctx, `啊啊啊`)
 	if err != nil {
 		test.Error(err)
 		test.FailNow()
@@ -41,8 +39,7 @@ func TestSendTgMsg2ConfigChatId(test *testing.T) {
 
 func TestSendTemplateToCommonTag(test *testing.T) {
 	ctx := util.GenCtx()
-	response, err := sdk.Client.SendTemplateToCommonTag(ctx, `啊啊啊`)
-	test.Logf("response: %+v\r\n", util.ToJsonIndentString(response))
+	err := sdk.Client.SendTemplateToCommonTag(ctx, `啊啊啊`)
 	if err != nil {
 		test.Error(err)
 		test.FailNow()

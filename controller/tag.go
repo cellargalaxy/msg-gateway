@@ -15,11 +15,11 @@ func createTag(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("创建标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
+		ctx.JSON(http.StatusOK, util.NewHttpResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("创建标签")
-	ctx.JSON(http.StatusOK, util.CreateResponse(controller.CreateTag(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.CreateTag(ctx, request)))
 }
 
 //删除标签
@@ -28,11 +28,11 @@ func deleteTag(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("删除标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
+		ctx.JSON(http.StatusOK, util.NewHttpResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("删除标签")
-	ctx.JSON(http.StatusOK, util.CreateResponse(controller.DeleteTag(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.DeleteTag(ctx, request)))
 }
 
 //获取所有标签
@@ -41,11 +41,11 @@ func listAllTag(ctx *gin.Context) {
 	err := ctx.BindQuery(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("获取所有标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
+		ctx.JSON(http.StatusOK, util.NewHttpResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("获取所有标签")
-	ctx.JSON(http.StatusOK, util.CreateResponse(controller.ListAllTag(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.ListAllTag(ctx, request)))
 }
 
 //为用户加标签
@@ -54,11 +54,11 @@ func addTagToUser(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("为用户加标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
+		ctx.JSON(http.StatusOK, util.NewHttpResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("为用户加标签")
-	ctx.JSON(http.StatusOK, util.CreateResponse(controller.AddTagToUser(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.AddTagToUser(ctx, request)))
 }
 
 //为用户删标签
@@ -67,9 +67,9 @@ func deleteTagFromUser(ctx *gin.Context) {
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request, "err": err}).Error("为用户删标签，请求参数解析异常")
-		ctx.JSON(http.StatusOK, util.CreateResponseByErr(err))
+		ctx.JSON(http.StatusOK, util.NewHttpResponseByErr(err))
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("为用户删标签")
-	ctx.JSON(http.StatusOK, util.CreateResponse(controller.DeleteTagFromUser(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.DeleteTagFromUser(ctx, request)))
 }

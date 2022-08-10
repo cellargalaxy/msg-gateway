@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	common_model "github.com/cellargalaxy/go_common/model"
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/cellargalaxy/msg_gateway/static"
@@ -16,14 +17,14 @@ func Controller() error {
 	engine.Use(claims)
 	engine.Use(util.GinLog)
 
-	debug := engine.Group(util.DebugPath, validate)
-	pprof.RouteRegister(debug, util.PprofPath)
+	debug := engine.Group(common_model.DebugPath, validate)
+	pprof.RouteRegister(debug, common_model.PprofPath)
 
-	engine.GET(util.PingPath, util.Ping)
-	engine.POST(util.PingPath, validate, util.Ping)
+	engine.GET(common_model.PingPath, util.Ping)
+	engine.POST(common_model.PingPath, validate, util.Ping)
 
 	engine.Use(staticCache)
-	engine.StaticFS("/static", http.FS(static.StaticFile))
+	engine.StaticFS(common_model.StaticPath, http.FS(static.StaticFile))
 
 	engine.GET(model.ListAllTemplatePath, validate, listAllTemplate)
 	engine.POST(model.SendTemplateToTagPath, validate, sendTemplateToTag)
@@ -47,7 +48,7 @@ func Controller() error {
 }
 
 func staticCache(c *gin.Context) {
-	if strings.HasPrefix(c.Request.RequestURI, "/static") {
+	if strings.HasPrefix(c.Request.RequestURI, common_model.StaticPath) {
 		c.Header("Cache-Control", "max-age=86400")
 	}
 }
