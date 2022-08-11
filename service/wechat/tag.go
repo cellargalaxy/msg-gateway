@@ -5,7 +5,6 @@ import (
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/go-resty/resty/v2"
-	"time"
 )
 
 //为微信用户删标签
@@ -14,7 +13,7 @@ func DeleteTagFromUser(ctx context.Context, tagId int, openIds []string) (bool, 
 		WechatResponse
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "为微信用户删标签", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "为微信用户删标签", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("access_token", GetAccessToken(ctx)).
@@ -38,7 +37,7 @@ func AddTagToUser(ctx context.Context, tagId int, openIds []string) (bool, error
 		WechatResponse
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "给微信用户加标签", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "给微信用户加标签", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("access_token", GetAccessToken(ctx)).
@@ -62,7 +61,7 @@ func DeleteTag(ctx context.Context, tagId int) (bool, error) {
 		WechatResponse
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "删除微信标签", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "删除微信标签", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("access_token", GetAccessToken(ctx)).
@@ -86,7 +85,7 @@ func ListAllTag(ctx context.Context) ([]model.Tag, error) {
 		Tags []model.Tag `json:"tags"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "获取微信所有标签", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "获取微信所有标签", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetQueryParam("access_token", GetAccessToken(ctx)).
 			Get("https://api.weixin.qq.com/cgi-bin/tags/get")
@@ -105,7 +104,7 @@ func CreateTag(ctx context.Context, tag string) (bool, error) {
 		WechatResponse
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "创建微信标签", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "创建微信标签", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("access_token", GetAccessToken(ctx)).

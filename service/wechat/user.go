@@ -6,7 +6,6 @@ import (
 	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 //获取微信全部用户信息
@@ -28,7 +27,7 @@ func ListAllOpenId(ctx context.Context) ([]string, error) {
 		Data Data `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "获取微信全部openId", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "获取微信全部openId", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetQueryParam("access_token", GetAccessToken(ctx)).
 			Get("https://api.weixin.qq.com/cgi-bin/user/get")
@@ -54,7 +53,7 @@ func ListUserInfo(ctx context.Context, openIds []string) ([]model.UserInfo, erro
 		UserInfoList []model.UserInfo `json:"user_info_list"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "获取微信用户信息", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "获取微信用户信息", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("access_token", GetAccessToken(ctx)).
@@ -81,7 +80,7 @@ func ListOpenIdByTagId(ctx context.Context, tagId int) ([]string, error) {
 		Data Data `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "获取微信标签下的openId", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "获取微信标签下的openId", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("access_token", GetAccessToken(ctx)).

@@ -8,7 +8,6 @@ import (
 	"github.com/cellargalaxy/msg_gateway/model"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 //给微信通用标签用户发送模板消息
@@ -51,7 +50,7 @@ func ListAllTemplate(ctx context.Context) ([]model.Template, error) {
 		TemplateList []model.Template `json:"template_list"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "获取微信所有模板", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "获取微信所有模板", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetQueryParam("access_token", GetAccessToken(ctx)).
 			Get("https://api.weixin.qq.com/cgi-bin/template/get_all_private_template")
@@ -70,7 +69,7 @@ func SendTemplate(ctx context.Context, openId string, templateId string, url str
 		WechatResponse
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "发送微信模板信息", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "发送微信模板信息", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("access_token", GetAccessToken(ctx)).

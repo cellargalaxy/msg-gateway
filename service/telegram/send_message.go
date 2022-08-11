@@ -6,7 +6,6 @@ import (
 	"github.com/cellargalaxy/go_common/util"
 	"github.com/cellargalaxy/msg_gateway/config"
 	"github.com/go-resty/resty/v2"
-	"time"
 )
 
 func SendMsg(ctx context.Context, chatId int64, text string) (bool, error) {
@@ -16,7 +15,7 @@ func SendMsg(ctx context.Context, chatId int64, text string) (bool, error) {
 		TgResponse
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "发送tg信息", util.TryDefault, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "发送tg信息", util.TryDefault, nil, &response, func() (*resty.Response, error) {
 		response, err := httpClient.R().SetContext(ctx).
 			SetHeader("Content-Type", "application/json;CHARSET=utf-8").
 			SetQueryParam("parse_mode", "MarkdownV2").

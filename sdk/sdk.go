@@ -69,7 +69,7 @@ func (this *MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) 
 		Data model.SendTgMsg2ConfigChatIdRequest `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "给配置chatId发送tg信息", this.try, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "给配置chatId发送tg信息", this.try, nil, &response, func() (*resty.Response, error) {
 		response, err := this.httpClient.R().SetContext(ctx).
 			SetHeader(this.genJWT(ctx)).
 			SetBody(map[string]interface{}{
@@ -89,7 +89,7 @@ func (this *MsgClient) SendWxTemplateToTag(ctx context.Context, templateId strin
 		Data model.SendTemplateToTagResponse `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "发送微信模板信息", this.try, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "发送微信模板信息", this.try, nil, &response, func() (*resty.Response, error) {
 		response, err := this.httpClient.R().SetContext(ctx).
 			SetHeader(this.genJWT(ctx)).
 			SetBody(map[string]interface{}{
@@ -112,7 +112,7 @@ func (this *MsgClient) SendTemplateToCommonTag(ctx context.Context, text string)
 		Data model.SendTemplateToTagResponse `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiWithTry(ctx, "发送微信通用模板信息", this.try, []time.Duration{0}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "发送微信通用模板信息", this.try, nil, &response, func() (*resty.Response, error) {
 		response, err := this.httpClient.R().SetContext(ctx).
 			SetHeader(this.genJWT(ctx)).
 			SetBody(map[string]interface{}{
