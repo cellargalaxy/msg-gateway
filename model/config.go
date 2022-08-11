@@ -20,7 +20,6 @@ const (
 )
 
 type Config struct {
-	Retry     int      `yaml:"retry" json:"retry"`
 	Addresses []string `yaml:"addresses" json:"addresses"`
 	Secret    string   `yaml:"secret" json:"-"`
 

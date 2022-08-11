@@ -32,9 +32,6 @@ func init() {
 }
 
 func checkAndResetConfig(ctx context.Context, config model.Config) (model.Config, error) {
-	if config.Retry < 0 {
-		config.Retry = 1
-	}
 	if config.Secret == "" {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("secret为空")
 		return config, fmt.Errorf("secret为空")

@@ -44,13 +44,13 @@ func (this MsgHandler) GetSecret(ctx context.Context) string {
 
 type MsgClient struct {
 	timeout    time.Duration
-	retry      int
+	try        int
 	httpClient *resty.Client
 	handler    MsgHandlerInter
 }
 
 func NewDefaultMsgClient(ctx context.Context) (*MsgClient, error) {
-	return NewMsgClient(ctx, util.TimeoutDefault, util.RetryDefault, util.GetHttpClient(), &MsgHandler{})
+	return NewMsgClient(ctx, util.TimeoutDefault, util.TryDefault, util.GetHttpClient(), &MsgHandler{})
 }
 
 func NewMsgClient(ctx context.Context, timeout time.Duration, retry int, httpClient *resty.Client, handler MsgHandlerInter) (*MsgClient, error) {
@@ -58,7 +58,7 @@ func NewMsgClient(ctx context.Context, timeout time.Duration, retry int, httpCli
 		logrus.WithContext(ctx).WithFields(logrus.Fields{}).Error("创建MsgClient，handler为空")
 		return nil, fmt.Errorf("MsgHandlerInter为空")
 	}
-	return &MsgClient{timeout: timeout, retry: retry, handler: handler, httpClient: httpClient}, nil
+	return &MsgClient{timeout: timeout, try: retry, handler: handler, httpClient: httpClient}, nil
 }
 
 //给配置chatId发送tg信息
@@ -69,7 +69,7 @@ func (this *MsgClient) SendTgMsg2ConfigChatId(ctx context.Context, text string) 
 		Data model.SendTgMsg2ConfigChatIdRequest `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiRetry(ctx, "给配置chatId发送tg信息", this.retry, []time.Duration{time.Microsecond}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "给配置chatId发送tg信息", this.try, []time.Duration{0}, &response, func() (*resty.Response, error) {
 		response, err := this.httpClient.R().SetContext(ctx).
 			SetHeader(this.genJWT(ctx)).
 			SetBody(map[string]interface{}{
@@ -89,7 +89,7 @@ func (this *MsgClient) SendWxTemplateToTag(ctx context.Context, templateId strin
 		Data model.SendTemplateToTagResponse `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiRetry(ctx, "发送微信模板信息", this.retry, []time.Duration{time.Microsecond}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "发送微信模板信息", this.try, []time.Duration{0}, &response, func() (*resty.Response, error) {
 		response, err := this.httpClient.R().SetContext(ctx).
 			SetHeader(this.genJWT(ctx)).
 			SetBody(map[string]interface{}{
@@ -112,7 +112,7 @@ func (this *MsgClient) SendTemplateToCommonTag(ctx context.Context, text string)
 		Data model.SendTemplateToTagResponse `json:"data"`
 	}
 	var response Response
-	err := util.HttpApiRetry(ctx, "发送微信通用模板信息", this.retry, []time.Duration{time.Microsecond}, &response, func() (*resty.Response, error) {
+	err := util.HttpApiWithTry(ctx, "发送微信通用模板信息", this.try, []time.Duration{0}, &response, func() (*resty.Response, error) {
 		response, err := this.httpClient.R().SetContext(ctx).
 			SetHeader(this.genJWT(ctx)).
 			SetBody(map[string]interface{}{
