@@ -15,13 +15,13 @@ var accessToken string
 func init() {
 	httpClient = util.GetHttpClient()
 	ctx := util.GenCtx()
-	_, err := util.NewForeverSingleGoPool(ctx, "刷新微信accessToken", time.Second, flushAccessToken)
+	_, err := util.NewDaemonSingleGoPool(ctx, "刷新微信accessToken", time.Second, flushAccessToken)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func flushAccessToken(ctx context.Context, cancel func()) {
+func flushAccessToken(ctx context.Context, pool *util.SingleGoPool) {
 	defer util.Defer(func(err interface{}, stack string) {
 		logrus.WithContext(ctx).WithFields(logrus.Fields{"err": err, "stack": stack}).Error("刷新微信accessToken，退出")
 	})
