@@ -11,9 +11,10 @@ import (
 )
 
 //给微信通用标签用户发送模板消息
-func SendTemplateToCommonTag(ctx context.Context, text string) ([]string, error) {
+func SendTemplateToCommonTag(ctx context.Context, serverName, text string) ([]string, error) {
 	dataMap := make(map[string]interface{})
 	dataMap["logid"] = util.GetLogId(ctx)
+	dataMap["sn"] = serverName
 	dataMap["text"] = text
 	return SendTemplateToTag(ctx, config.Config.WxCommonTempId, config.Config.WxCommonTagId, fmt.Sprintf("https://wx2.qq.com?logid=%+v&text=%+v", dataMap["logid"], dataMap["text"]), dataMap)
 }

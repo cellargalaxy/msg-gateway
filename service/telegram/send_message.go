@@ -8,8 +8,11 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-func SendMsg(ctx context.Context, chatId int64, text string) (bool, error) {
+func SendMsg(ctx context.Context, chatId int64, serverName, text string) (bool, error) {
 	text = fmt.Sprintf("```\n%+v\n```\nlogid: ```%+v```", text, util.GetLogId(ctx))
+	if serverName != "" {
+		text = fmt.Sprintf("```\n%+v\n```\nsn: ```%+v```\nlogid: ```%+v```", text, serverName, util.GetLogId(ctx))
+	}
 
 	type Response struct {
 		TgResponse

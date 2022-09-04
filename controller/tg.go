@@ -19,5 +19,5 @@ func sendTgMsg2ConfigChatId(ctx *gin.Context) {
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("给配置chatId发送tg信息")
-	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.SendTgMsg2ConfigChatId(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.SendTgMsg2ConfigChatId(ctx, util.GetClaims(ctx), request)))
 }

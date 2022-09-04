@@ -45,5 +45,5 @@ func sendTemplateToCommonTag(ctx *gin.Context) {
 		return
 	}
 	logrus.WithContext(ctx).WithFields(logrus.Fields{"request": request}).Info("给通用标签用户发送模板消息")
-	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.SendTemplateToCommonTag(ctx, request)))
+	ctx.JSON(http.StatusOK, util.NewHttpResponse(controller.SendTemplateToCommonTag(ctx, util.GetClaims(ctx), request)))
 }

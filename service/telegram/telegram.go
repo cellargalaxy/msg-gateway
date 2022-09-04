@@ -31,6 +31,6 @@ func (this *TgResponse) HttpSuccess(ctx context.Context) error {
 //https://www.cnblogs.com/kainhuck/p/13576012.html
 
 //给配置chatId发送tg信息
-func SendTgMsg2ConfigChatId(ctx context.Context, text string) (bool, error) {
-	return SendMsg(ctx, config.Config.TgChatId, text)
+func SendTgMsg2ConfigChatId(ctx context.Context, serverName, text string) (bool, error) {
+	return SendMsg(ctx, config.Config.TgChatId, serverName, text)
 }
