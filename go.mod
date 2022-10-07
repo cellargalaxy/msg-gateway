@@ -3,8 +3,8 @@ module github.com/cellargalaxy/msg_gateway
 go 1.19
 
 require (
-	github.com/cellargalaxy/go_common v0.0.0-20221006092252-bad2ec60af48
-	github.com/cellargalaxy/server_center v0.0.0-20221006093300-10b9d9b7e46d
+	github.com/cellargalaxy/go_common v0.0.0-20221007081428-f87392a19701
+	github.com/cellargalaxy/server_center v0.0.0-20221007081531-506b8b73afb8
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-resty/resty/v2 v2.7.0
