@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/cellargalaxy/go_common v0.0.0-20221007081428-f87392a19701
-	github.com/cellargalaxy/server_center v0.0.0-20221007081531-506b8b73afb8
+	github.com/cellargalaxy/server_center v0.0.0-20221007083316-8316a7614ee9
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-resty/resty/v2 v2.7.0
@@ -32,7 +32,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
-	github.com/wumansgy/goEncrypt v1.1.0 // indirect
+	github.com/wumansgy/goEncrypt v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b // indirect
 	golang.org/x/net v0.0.0-20221004154528-8021a29435af // indirect
 	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
